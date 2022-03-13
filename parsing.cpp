@@ -10,15 +10,9 @@ subequation parsing::numberToChar(subequation &eq,double number)
     if(eq.sEq.size() != 0 )
     {
         eq.siEq = eq.sEq.size();
-        eq.cEq[eq.siEq]; //#ff0000
-        eq.sEq.copy(eq.cEq, eq.sEq.size(),0);//#ff0000
+        eq.cEq[eq.siEq];
+        eq.sEq.copy(eq.cEq, eq.sEq.size(),0);
     }
-    printf("\n\n\nimporting first: ");
-     for(int i = 0; i < eq.siEq; i++)
-    {
-        printf("%c",eq.cEq[i]);
-    }
-    printf("\n");
     return eq;
 }
 
@@ -44,7 +38,6 @@ int parsing::sizeOfNumber(double a)
 
 subequation parsing::resultImporting(subequation &eq, int startingPoint, int finalPoint, double number)
 {
-    printf("\nimporting result\n");
     if(finalPoint - startingPoint + 1 < sizeOfNumber(number))
     {
         for(int i = eq.siEq - 1; i > finalPoint; i--)
@@ -53,18 +46,11 @@ subequation parsing::resultImporting(subequation &eq, int startingPoint, int fin
         }
     }
     subequation temp = {};
-    printf("test1");
     numberToChar(temp, number);
     for(int i = startingPoint; i <= finalPoint; i++)
     {
         eq.cEq[i] = ' ';
     }
-    printf("\n\n\nimporting: ");
-    for(int i = 0; i < temp.siEq;i++)
-    {
-        printf("%c",temp.cEq[i]);
-    }
-    printf("\n");
     for(int i = 0; i < temp.siEq; i++)
     {
         eq.cEq[i + startingPoint] = temp.cEq[i];
@@ -74,7 +60,6 @@ subequation parsing::resultImporting(subequation &eq, int startingPoint, int fin
 
 subequation parsing::bracketParser(subequation &eq)
 {
-    printf("\nparsing brackets\n");
     int openB = 0;
     int startB = 0;
     int endB = 0;
@@ -97,14 +82,11 @@ subequation parsing::bracketParser(subequation &eq)
         }
     }
 
-    printf("start: %d\n",startB);
-    printf("end: %d\n",endB);
     if(endB != startB)
     {
         eq.cEq[startB] = ' ';
         eq.cEq[endB] = ' ';
     }
-    //#a0a0fa
     subequation subEq = {};
     if(!first)
     {
@@ -117,18 +99,12 @@ subequation parsing::bracketParser(subequation &eq)
         }
         resultImporting(eq,startB,endB,textParserEquation(subEq));
     }
-    //#a0a0fa
 
 
     return eq;
 }
 
 numberParsed parsing::numberParser(subequation &eq, int startingPoint) {
-    printf("\nparsing a number\n");
-    for(int i = startingPoint; i < 5; i++)
-    {
-        printf("%c",eq.cEq[i]);
-    }
     bool negative = false;
     bool decimal = true;
     double tempDivider = 1;
@@ -160,13 +136,11 @@ numberParsed parsing::numberParser(subequation &eq, int startingPoint) {
     numberParsed returnValue = {};
     returnValue.number = tempNumber;
     returnValue.final = iaiai;
-    printf("\nparsed number: %d\n",returnValue.number);
     return returnValue;
 }
 
 subequation parsing::calculatorParser(subequation &eq, int stage)
 {
-    printf("\ncalculating\n");
     double buffera;
     double bufferb;
     int equationDone = 0;
@@ -268,10 +242,7 @@ subequation parsing::calculatorParser(subequation &eq, int stage)
                     numberParsed NP = {};
                     NP = numberParser(eq,i);
                     bufferb = NP.number;
-                    printf("a%f\n",buffera);
-                    printf("b%f\n",bufferb);
                     buffera = buffera + bufferb;
-                    printf("a%f\n",buffera);
                     eq = resultImporting(eq, startEquation, NP.final, buffera);
                     i = NP.final;
                     equationDone = 0;
@@ -343,32 +314,15 @@ double parsing::textParserEquation(subequation &eq)
     if(eq.sEq.size() != 0 )
     {
         eq.siEq = eq.sEq.size();
-        eq.cEq[eq.siEq]; //#ff0000
-        eq.sEq.copy(eq.cEq, eq.sEq.size(),0);//#ff0000
+        eq.cEq[eq.siEq];
+        eq.sEq.copy(eq.cEq, eq.sEq.size(),0);
     }
     eq = variableParser(eq);
-    // eq = textFixer(eq);
-    printf("\nBEFORE BRACKET PARSER:\n");
-    for(int i = 0; i < eq.siEq; i++)
-    {
-        printf("%c",eq.cEq[i]);
-    }
     eq = bracketParser(eq);
-    printf("\nAFTER BRACKET PARSER:\n");
-    for(int i = 0; i < eq.siEq; i++)
-    {
-        printf("%c",eq.cEq[i]);
-    }
     for(int i = 0; i < 3; i++)
     {
         eq = calculatorParser(eq, i);
     }
-    printf("\nFINAL:\n");
-    for(int i = 0; i < eq.siEq; i++)
-    {
-        printf("%c",eq.cEq[i]);
-    }
-    printf("\n");
     numberParsed FINALNUMBER = {};
     FINALNUMBER = numberParser(eq, 0);
     printf("FINAL FINAL: %f", FINALNUMBER.number);
