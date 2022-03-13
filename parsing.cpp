@@ -65,7 +65,7 @@ subequation parsing::resultImporting(subequation &eq, int startingPoint, int fin
         printf("%c",temp.cEq[i]);
     }
     printf("\n");
-    for(int i = 0; i < sizeOfNumber(number); i++)
+    for(int i = 0; i < temp.siEq; i++)
     {
         eq.cEq[i + startingPoint] = temp.cEq[i];
     }
@@ -125,6 +125,10 @@ subequation parsing::bracketParser(subequation &eq)
 
 numberParsed parsing::numberParser(subequation &eq, int startingPoint) {
     printf("\nparsing a number\n");
+    for(int i = startingPoint; i < 5; i++)
+    {
+        printf("%c",eq.cEq[i]);
+    }
     bool negative = false;
     bool decimal = true;
     double tempDivider = 1;
@@ -132,14 +136,14 @@ numberParsed parsing::numberParser(subequation &eq, int startingPoint) {
     int iaiai = 0;
     for(int i = startingPoint; i < eq.siEq; i++)
     {
-        if((eq.cEq[i] - '0' >= 0 && eq.cEq[i] - '0' <= 9) || eq.cEq[i] == '.' || eq.cEq[i] == '-')
+        if((eq.cEq[i] - '0' >= 0 && eq.cEq[i] - '0' <= 9) || eq.cEq[i] == fraEQS || eq.cEq[i] == negEQS)
         {
-            if(eq.cEq[i] == '.')
+            if(eq.cEq[i] == fraEQS)
             {
                 decimal = false;
-            } else if(eq.cEq[i] == '-') {
+            } else if(eq.cEq[i] == negEQS) {
                 negative = true;
-            }else {
+            }else if(eq.cEq[i] - '0' >= 0 && eq.cEq[i] - '0' <= 9){
                 if(decimal)
                     tempNumber *= 10;
                 else
@@ -156,6 +160,7 @@ numberParsed parsing::numberParser(subequation &eq, int startingPoint) {
     numberParsed returnValue = {};
     returnValue.number = tempNumber;
     returnValue.final = iaiai;
+    printf("\nparsed number: %d\n",returnValue.number);
     return returnValue;
 }
 
@@ -170,7 +175,7 @@ subequation parsing::calculatorParser(subequation &eq, int stage)
     {
         for(int i = 0; i < eq.siEq; i++)
         {
-            if((eq.cEq[i] - '0' >= 0 && eq.cEq[i] - '0' <= 9) || eq.cEq[i] == '.' || eq.cEq[i] == '-')
+            if((eq.cEq[i] - '0' >= 0 && eq.cEq[i] - '0' <= 9) || eq.cEq[i] == fraEQS || eq.cEq[i] == negEQS)
             {
                 if(equationDone == 1)
                 {
@@ -183,7 +188,7 @@ subequation parsing::calculatorParser(subequation &eq, int stage)
                         buffera *= originalNumber;
                     }
                     eq = resultImporting(eq, startEquation, NP.final, buffera);
-                    i = startEquation;
+                    i = NP.final;
                     equationDone = 0;
                 }
                 else
@@ -194,7 +199,7 @@ subequation parsing::calculatorParser(subequation &eq, int stage)
                     i = tempNP.final;
                 }
             }
-            if(eq.cEq[i] == '^')
+            if(eq.cEq[i] == powEQS)
             {
                 equationDone = 1;
             }
@@ -204,7 +209,7 @@ subequation parsing::calculatorParser(subequation &eq, int stage)
     {
         for(int i = 0; i < eq.siEq; i++)
         {
-            if((eq.cEq[i] - '0' >= 0 && eq.cEq[i] - '0' <= 9) || eq.cEq[i] == '.' || eq.cEq[i] == '-')
+            if((eq.cEq[i] - '0' >= 0 && eq.cEq[i] - '0' <= 9) || eq.cEq[i] == fraEQS || eq.cEq[i] == negEQS)
             {
                 if(equationDone == 1)
                 {
@@ -213,7 +218,7 @@ subequation parsing::calculatorParser(subequation &eq, int stage)
                     bufferb = NP.number;
                     buffera = buffera / bufferb;
                     eq = resultImporting(eq, startEquation, NP.final, buffera);
-                    i = startEquation;
+                    i = NP.final;
                     equationDone = 0;
                 } else if (equationDone == 2)
                 {
@@ -222,7 +227,7 @@ subequation parsing::calculatorParser(subequation &eq, int stage)
                     bufferb = NP.number;
                     buffera = buffera * bufferb;
                     eq = resultImporting(eq, startEquation, NP.final, buffera);
-                    i = startEquation;
+                    i = NP.final;
                     equationDone = 0;
                 }
                 else
@@ -233,11 +238,11 @@ subequation parsing::calculatorParser(subequation &eq, int stage)
                     i = tempNP.final;
                 }
             }
-            if(eq.cEq[i] == '/')
+            if(eq.cEq[i] == divEQS)
             {
                 equationDone = 1;
             }            
-            if(eq.cEq[i] == '*')
+            if(eq.cEq[i] == mulEQS)
             {
                 equationDone = 2;
             }
@@ -247,7 +252,7 @@ subequation parsing::calculatorParser(subequation &eq, int stage)
     {
         for(int i = 0; i < eq.siEq; i++)
         {
-            if((eq.cEq[i] - '0' >= 0 && eq.cEq[i] - '0' <= 9) || eq.cEq[i] == '.' || eq.cEq[i] == '-')
+            if((eq.cEq[i] - '0' >= 0 && eq.cEq[i] - '0' <= 9) || eq.cEq[i] == fraEQS || eq.cEq[i] == negEQS)
             {
                 if(equationDone == 1)
                 {
@@ -256,7 +261,7 @@ subequation parsing::calculatorParser(subequation &eq, int stage)
                     bufferb = NP.number;
                     buffera = buffera - bufferb;
                     eq = resultImporting(eq, startEquation, NP.final, buffera);
-                    i = startEquation;
+                    i = NP.final;
                     equationDone = 0;
                 } else if (equationDone == 2)
                 {
@@ -268,7 +273,7 @@ subequation parsing::calculatorParser(subequation &eq, int stage)
                     buffera = buffera + bufferb;
                     printf("a%f\n",buffera);
                     eq = resultImporting(eq, startEquation, NP.final, buffera);
-                    i = startEquation;
+                    i = NP.final;
                     equationDone = 0;
                 }
                 else
@@ -279,17 +284,58 @@ subequation parsing::calculatorParser(subequation &eq, int stage)
                     i = tempNP.final;
                 }
             }
-            if(eq.cEq[i] == '_')
+            if(eq.cEq[i] == subEQS)
             {
                 equationDone = 1;
             }            
-            if(eq.cEq[i] == '+')
+            if(eq.cEq[i] == addEQS)
             {
                 equationDone = 2;
             }
         }
     }
     return eq;
+}
+
+subequation parsing::variableParser(subequation &eq)
+{
+    for(int i = 0; i < eq.siEq; i++)
+    {
+        for(int a = 0; a < eq.vEq.size();a++)
+        {
+            if(eq.cEq[i] == eq.vEq[a].name)
+            {
+                eq.siEq += sizeOfNumber(eq.vEq[a].value);
+                eq.cEq[eq.siEq];
+                for(int b = 0; b < eq.siEq - i; b++)
+                {
+                    eq.cEq[eq.siEq - b + sizeOfNumber(eq.vEq[a].value)] = eq.cEq[eq.siEq - b];
+                }
+                resultImporting(eq,i,i,eq.vEq[a].value);
+            }
+        }
+    }
+    return eq;
+}
+
+subequation parsing::textFixer(subequation &eq)
+{
+    int subtract = 0;
+    for(int i = 0; i < eq.siEq; i++)
+    {
+        if(eq.cEq[i] == ' ')
+        {
+            subtract++;
+            eq.cEq[i] = eq.cEq[i+1];
+            eq.cEq[i+1] = ' ';
+        }
+    }
+    return eq;
+}
+
+subequation parsing::variableAdder(subequation &eq, char symbol, double value)
+{
+    eq.vEq.push_back({ symbol, value });
 }
 
 double parsing::textParserEquation(subequation &eq)
@@ -300,6 +346,8 @@ double parsing::textParserEquation(subequation &eq)
         eq.cEq[eq.siEq]; //#ff0000
         eq.sEq.copy(eq.cEq, eq.sEq.size(),0);//#ff0000
     }
+    eq = variableParser(eq);
+    // eq = textFixer(eq);
     printf("\nBEFORE BRACKET PARSER:\n");
     for(int i = 0; i < eq.siEq; i++)
     {
@@ -323,6 +371,6 @@ double parsing::textParserEquation(subequation &eq)
     printf("\n");
     numberParsed FINALNUMBER = {};
     FINALNUMBER = numberParser(eq, 0);
-    printf("%f", FINALNUMBER.number);
+    printf("FINAL FINAL: %f", FINALNUMBER.number);
     return FINALNUMBER.number;
 }

@@ -38,4 +38,18 @@ public:
     subequation resultImporting(subequation &eq, int startingPoint, int finalPoint, double number);
 
     subequation numberToChar(subequation &eq, double number);
+
+    subequation textFixer(subequation &eq);
+
+    subequation variableParser(subequation &eq);
+
+    subequation variableAdder(subequation &eq, char symbol, double value);
+
+    char subEQS = '_';
+    char addEQS = '+';
+    char mulEQS = '*';
+    char divEQS = '/';
+    char powEQS = '^';
+    char negEQS = '-';
+    char fraEQS = '.';
 };
